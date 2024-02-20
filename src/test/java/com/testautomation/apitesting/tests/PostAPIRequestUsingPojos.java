@@ -12,10 +12,11 @@ import com.testautomation.apitesting.pojos.Booking;
 import com.testautomation.apitesting.pojos.BookingDates;
 import com.testautomation.apitesting.utils.FileNameConstants;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
+
+import static io.restassured.RestAssured.given;
 
 public class PostAPIRequestUsingPojos {
 
@@ -23,15 +24,16 @@ public class PostAPIRequestUsingPojos {
 	public void postAPIRequest() {
 
 		try {
-			
-			String jsonSchema = FileUtils.readFileToString(new File(FileNameConstants.JSON_SCHEMA),"UTF-8");
+
+//			String jsonSchema = FileUtils.readFileToString(new File(FileNameConstants.JSON_SCHEMA),"UTF-8");
 			
 			BookingDates bookingDates = new BookingDates("2023-03-25", "2023-03-30");
 			Booking booking = new Booking("api testing", "tutorial", "breakfast", 1000, true, bookingDates);
 
 			//serialization
 			ObjectMapper objectMapper = new ObjectMapper();
-			String requestBody = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(booking);
+//			String requestBody = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(booking);
+			String requestBody = objectMapper.writeValueAsString(booking);
 			System.out.println(requestBody);
 
 			// de-serialization
@@ -42,25 +44,22 @@ public class PostAPIRequestUsingPojos {
 			System.out.println(bookingDetails.getBookingdates().getCheckout());
 			
 			Response response =
-			RestAssured
-				.given()
+				given()
 					.contentType(ContentType.JSON)
-					.body(requestBody)
+					.body(booking)
 					.baseUri("https://restful-booker.herokuapp.com/booking")
 				.when()
-					.post()
-				.then()
+					.post();
+
+			response.then()
 					.assertThat()
-					.statusCode(200)
-				.extract()
-					.response();
-			
+					.statusCode(200);
+
 			int bookingId = response.path("bookingid");
 			
 			//System.out.println(jsonSchema);
 			
-			RestAssured
-				.given()
+				given()
 					.contentType(ContentType.JSON)
 					.baseUri("https://restful-booker.herokuapp.com/booking")
 				.when()
@@ -68,15 +67,15 @@ public class PostAPIRequestUsingPojos {
 				.then()
 					.assertThat()
 					.statusCode(200)
-					.body(JsonSchemaValidator.matchesJsonSchema(jsonSchema));
+					.body(JsonSchemaValidator.matchesJsonSchema(new File(FileNameConstants.JSON_SCHEMA)));
 
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		}
 	}
 
 }

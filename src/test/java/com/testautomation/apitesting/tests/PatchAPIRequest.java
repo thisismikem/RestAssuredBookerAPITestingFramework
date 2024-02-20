@@ -50,7 +50,7 @@ public class PatchAPIRequest {
 		
 		Assert.assertEquals(firstName, "api testing");
 		
-		int bookingId = JsonPath.read(response.body().asString(),"$.bookingid");
+		String bookingId = JsonPath.read(response.body().asString(),"$.bookingid").toString();
 		
 		//get api call
 		RestAssured
@@ -103,9 +103,10 @@ public class PatchAPIRequest {
 				.header("Cookie", "token="+token)
 				.baseUri("https://restful-booker.herokuapp.com/booking")
 			.when()
-				.patch("/{bookingId}",bookingId)
+				.patch(bookingId)
 			.then()
 				.assertThat()
+				.log().all()
 				.statusCode(200)
 				.body("firstname", Matchers.equalTo("Testers Talk"));
 		

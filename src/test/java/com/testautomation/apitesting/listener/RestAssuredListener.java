@@ -19,12 +19,12 @@ public class RestAssuredListener implements Filter {
 
 		Response response = ctx.next(requestSpec, responseSpec);
 
-		// if(response.getStatusCode() != 200 || response.getStatusCode() != 201) {
-		logger.info(
-				"\n Method =>" + requestSpec.getMethod() + "\n URI => " + requestSpec.getURI() + "\n Request body => "
-						+ requestSpec.getBody() + "\n Response body => " + response.getBody().prettyPrint());
+		if(response.getStatusCode() != 200 & response.getStatusCode() != 201) {
+			logger.error(
+					"\n Method =>" + requestSpec.getMethod() + "\n URI => " + requestSpec.getURI() + "\n Request body => "
+							+ requestSpec.getBody() + "\n Response body => " + response.getBody().prettyPrint());
 
-		// }
+		}
 		return response;
 	}
 

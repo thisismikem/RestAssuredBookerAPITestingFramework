@@ -3,7 +3,7 @@
   "type": "object",
   "properties": {
     "firstname": {
-      "type": "integer"
+      "type": "string"
     },
     "lastname": {
       "type": "string"

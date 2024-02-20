@@ -59,7 +59,7 @@ public class EndToEndAPITest extends BaseTest {
 
 			Assert.assertEquals(firstName, "api testing");
 
-			int bookingId = JsonPath.read(response.body().asString(), "$.bookingid");
+			String bookingId = JsonPath.read(response.body().asString(), "$.bookingid").toString();
 			System.out.println("Booking Id : " + bookingId);
 
 			// get api call
@@ -130,7 +130,7 @@ public class EndToEndAPITest extends BaseTest {
 				.header("Cookie", "token=" + token)
 				.baseUri("https://restful-booker.herokuapp.com/booking")
 			.when()
-				.delete("/{bookingId}", bookingId)
+				.delete(bookingId)
 			.then()
 				.assertThat()
 				.statusCode(201);

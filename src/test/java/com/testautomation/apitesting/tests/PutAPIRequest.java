@@ -63,7 +63,7 @@ public class PutAPIRequest {
 		
 		//token generation
 		Response tokenAPIResponse =
-		RestAssured
+			RestAssured
 				.given()
 					.contentType(ContentType.JSON)
 					.body(tokenAPIRequestBody)
@@ -75,9 +75,10 @@ public class PutAPIRequest {
 					.statusCode(200)
 				.extract()
 					.response();
-		
-		String token = JsonPath.read(tokenAPIResponse.body().asString(),"$.token");
-		
+
+		String token = tokenAPIResponse.path("token");
+		System.out.println(token);
+
 		//put api call
 		RestAssured
 			.given()
@@ -85,10 +86,12 @@ public class PutAPIRequest {
 				.body(putAPIRequestBody)
 				.header("Cookie", "token="+token)
 				.baseUri("https://restful-booker.herokuapp.com/booking")
+				.log().all()
 			.when()
 				.put("/{bookingId}",bookingId)
 			.then()
 				.assertThat()
+				.log().all()
 				.statusCode(200)
 				.body("firstname", Matchers.equalTo("Specflow"))
 				.body("lastname", Matchers.equalTo("Selenium C#"));
