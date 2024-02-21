@@ -43,6 +43,7 @@ public class DataDrivenTestingUsingJsonFile {
 				.post()
 			.then()
 				.assertThat()
+				.log().all()
 				.statusCode(200)
 			.extract()
 				.response();
@@ -52,22 +53,14 @@ public class DataDrivenTestingUsingJsonFile {
   
   @DataProvider(name="getTestData")
   public Object[] getTestDataUsingJson() {
-	  
-	  Object[] obj =null;
-	  
+
+	  Object[] obj = new Object[0];
+
 	  try {
-		String jsonTestData = FileUtils.readFileToString(new File(FileNameConstants.JSON_TEST_DATA),"UTF-8");
-		  
-		JSONArray jsonArray = JsonPath.read(jsonTestData, "$");
-		
-		obj = new Object[jsonArray.size()];
-		
-		for (int i = 0; i < jsonArray.size(); i++) {
-			obj[i] = jsonArray.get(i);
-		}
-		  
+		JSONArray jsonArray = JsonPath.read(new File(FileNameConstants.JSON_TEST_DATA), "$");
+		obj = jsonArray.toArray();
+
 	} catch (IOException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 	  return obj;
