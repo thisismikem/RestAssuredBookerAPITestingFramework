@@ -185,7 +185,7 @@ public class AllureReportGeneration extends BaseTest {
 					.then()
 						.assertThat()
 					.log().all()
-						.statusCode(2000)
+						.statusCode(200)
 					.extract()
 						.response();
 
